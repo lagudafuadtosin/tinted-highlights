@@ -283,13 +283,13 @@ export default class HighlightrPlugin extends Plugin {
   async showHighlights() {
     const open = this.app.workspace.getLeavesOfType(HIGHLIGHTS_VIEW)[0];
     if (open) {
-      this.app.workspace.revealLeaf(open);
+      await this.app.workspace.revealLeaf(open);
       return;
     }
     const leaf = this.app.workspace.getRightLeaf(false);
     if (!leaf) return;
     await leaf.setViewState({ type: HIGHLIGHTS_VIEW, active: true });
-    this.app.workspace.revealLeaf(leaf);
+    await this.app.workspace.revealLeaf(leaf);
   }
 
   onunload() {

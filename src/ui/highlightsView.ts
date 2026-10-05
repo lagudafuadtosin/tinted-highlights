@@ -101,7 +101,7 @@ export class HighlightsView extends ItemView {
       leaf = this.app.workspace.getLeaf(false);
       await leaf.openFile(file);
     }
-    this.app.workspace.setActiveLeaf(leaf, false, true);
+    this.app.workspace.setActiveLeaf(leaf, { focus: true });
     const view = leaf.view as MarkdownView;
     const pos = { line: f.line, ch: f.ch };
     if (view.getMode() === "source") {
