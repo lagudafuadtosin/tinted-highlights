@@ -12,7 +12,9 @@ const highlighterMenu = (
   settings: HighlightrSettings,
   editor: EnhancedEditor
 ): void => {
-  if (editor && editor.hasFocus()) {
+  // No focus check: on a phone the command palette takes focus from the note, so the menu never opened.
+  // The command only runs with a note open, so the editor is always there.
+  if (editor) {
     const cursor = editor.getCursor("from");
     let coords: Coords;
 

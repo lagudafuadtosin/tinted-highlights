@@ -132,7 +132,10 @@ export default class HighlightrPlugin extends Plugin {
         // highlight nested inside another one.
         if (/<mark\b[^>]*>/i.test(selectedText)) {
           const plain = selectedText.replace(/<mark\b[^>]*>/gi, "").replace(/<\/mark>/gi, "");
-          editor.replaceSelection(`${command.prefix}${plain}${command.suffix || command.prefix}`);
+          // Every highlight in the selection is already this colour: picking it again removes them.
+          const tags = selectedText.match(/<mark\b[^>]*>/gi) ?? [];
+          const same = tags.every((t) => t === command.prefix);
+          editor.replaceSelection(same ? plain : `${command.prefix}${plain}${command.suffix || command.prefix}`);
           return;
         }
 
