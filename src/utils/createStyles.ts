@@ -1,4 +1,4 @@
-import { HighlightrSettings } from "src/settings/settingsData";
+import type { HighlightrSettings } from "src/settings/settingsData";
 
 function addNewStyle(selector: string, style: string, sheet: { text: string }) {
   sheet.text += selector + `{\n ${style}\n}\n\n`;

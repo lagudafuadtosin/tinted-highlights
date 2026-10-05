@@ -1,12 +1,13 @@
 {
   "name": "tinted-highlights",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Colour-coded highlighting that stays readable on any theme, recolours highlights in place, and shows every highlight in a note in one panel. Built on Highlightr by Chetachi Ezikeuzor.",
   "main": "main.js",
   "scripts": {
     "dev": "rollup --config rollup.config.js -w",
     "build": "rollup --config rollup.config.js",
-    "lint": "eslint src"
+    "lint": "eslint src",
+    "test": "node --experimental-strip-types --no-warnings --test test/logic.test.ts"
   },
   "keywords": [],
   "author": "Fuad Laguda (built on Highlightr by Chetachi Ezikeuzor)",

@@ -320,7 +320,7 @@ export default class HighlightrPlugin extends Plugin {
       if (!(await this.app.vault.adapter.exists(path))) return null;
       const old: unknown = JSON.parse(await this.app.vault.adapter.read(path));
       if (!isOldSettings(old)) return null;
-      new Notice("Tinted Highlights brought over your colours from Highlightr.");
+      new Notice("Your highlight colours were brought over.");
       return old;
     } catch {
       return null;

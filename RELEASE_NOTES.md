@@ -1,0 +1,1 @@
+Releases are now built on GitHub by the release workflow, which runs Obsidian's review rules and the tests and attests where the files came from. Tests added for the readable-text colours and the highlight finder. No change to how the plugin works.
