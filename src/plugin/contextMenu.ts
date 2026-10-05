@@ -2,7 +2,7 @@ import type HighlightrPlugin from "src/plugin/main";
 import { Menu } from "obsidian";
 import { HighlightrSettings } from "src/settings/settingsData";
 import highlighterMenu from "src/ui/highlighterMenu";
-import { EnhancedApp, EnhancedEditor } from "src/settings/types";
+import { EnhancedApp, EnhancedEditor, EnhancedMenuItem } from "src/settings/types";
 
 export default function contextMenu(
   app: EnhancedApp,
@@ -14,7 +14,7 @@ export default function contextMenu(
   const selection = editor.getSelection();
 
   menu.addItem((item) => {
-    const itemDom = (item as any).dom as HTMLElement;
+    const itemDom = (item as EnhancedMenuItem).dom;
     itemDom.addClass("highlighter-button");
     item
       .setTitle("Highlight")

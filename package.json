@@ -1,14 +1,15 @@
 {
-  "name": "highlightr-plugin",
-  "version": "1.1.1",
-  "description": "Highlightr is a plugin that adds a simple highlighting modal for better multi-colored highlighting support 🎨.",
+  "name": "tinted-highlights",
+  "version": "1.0.0",
+  "description": "Colour-coded highlighting that stays readable on any theme, recolours highlights in place, and shows every highlight in a note in one panel. Built on Highlightr by Chetachi Ezikeuzor.",
   "main": "main.js",
   "scripts": {
     "dev": "rollup --config rollup.config.js -w",
-    "build": "rollup --config rollup.config.js"
+    "build": "rollup --config rollup.config.js",
+    "lint": "eslint src"
   },
   "keywords": [],
-  "author": "",
+  "author": "Fuad Laguda (built on Highlightr by Chetachi Ezikeuzor)",
   "license": "MIT",
   "devDependencies": {
     "@rollup/plugin-commonjs": "^18.0.0",
@@ -16,13 +17,14 @@
     "@rollup/plugin-typescript": "^8.2.1",
     "@types/node": "^14.14.37",
     "@types/sortablejs": "^1.13.0",
+    "eslint": "^9.39.5",
+    "eslint-plugin-obsidianmd": "^0.4.2",
     "obsidian": "^0.16.0",
     "rollup": "^2.32.1",
     "tslib": "^2.2.0",
     "typescript": "^4.2.4"
   },
   "dependencies": {
-    "@simonwep/pickr": "^1.8.2",
     "copy": "^0.0.1",
     "dotenv": "^10.0.0",
     "react": "^17.0.2",

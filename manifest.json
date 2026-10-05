@@ -1,10 +1,10 @@
 {
-  "id": "highlightr-plugin",
-  "name": "Highlightr",
-  "version": "1.2.2",
-  "minAppVersion": "0.12.8",
-  "description": "A minimal and aesthetically pleasing highlighting menu that makes color-coded highlighting much easier with a configurable assortment of highlight colors 🎨.",
-  "author": "chetachi",
-  "authorUrl": "https://github.com/chetachiezikeuzor",
+  "id": "tinted-highlights",
+  "name": "Tinted Highlights",
+  "version": "1.0.0",
+  "minAppVersion": "1.0.0",
+  "description": "Colour-coded highlighting that stays readable on any theme, recolours highlights in place, and shows every highlight in a note in one panel. Built on Highlightr by Chetachi Ezikeuzor.",
+  "author": "Fuad Laguda",
+  "authorUrl": "https://github.com/lagudafuadtosin",
   "isDesktopOnly": false
 }

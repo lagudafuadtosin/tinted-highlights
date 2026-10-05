@@ -772,3 +772,63 @@ PICKR 1.8.2 MIT | https://github.com/Simonwep/pickr
     url('data:image/svg+xml;utf8, <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2 2"><path fill="white" d="M1,0H2V1H1V0ZM0,1H1V2H0V1Z"/><path fill="gray" d="M0,0H1V1H0V0ZM1,1H2V2H1V1Z"/></svg>');
   background-size: 100%, 0.25em;
 }
+
+/* Tinted Highlights: the Highlights panel */
+.tinted-panel { padding: 8px 10px; }
+.tinted-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 10px; }
+.tinted-count { font-size: var(--font-ui-small); color: var(--text-muted); }
+.tinted-empty { color: var(--text-muted); font-size: var(--font-ui-small); }
+.tinted-group { margin-bottom: 14px; }
+.tinted-group-title { display: flex; align-items: center; gap: 6px; font-weight: 600; font-size: var(--font-ui-small); margin-bottom: 4px; }
+.tinted-swatch { width: 12px; height: 12px; border-radius: 3px; border: 1px solid var(--background-modifier-border); }
+.tinted-item { padding: 4px 8px; margin: 2px 0; border-left: 3px solid var(--interactive-accent); border-radius: 4px; cursor: pointer; font-size: var(--font-ui-small); line-height: 1.4; }
+.tinted-item:hover { background: var(--background-modifier-hover); }
+
+/* Settings: the highlight style preview under "Choose highlight style" */
+.highlightr-style-demo {
+  font-size: 0.925em;
+  margin-top: 12px;
+}
+
+.highlightr-style-demo-lowlight {
+  background: #ffb7eacc;
+  padding: 0.125em 0.125em;
+  --lowlight-background: var(--background-primary);
+  border-radius: 0;
+  background-image: linear-gradient(
+    360deg,
+    rgba(255, 255, 255, 0) 40%,
+    var(--lowlight-background) 40%
+  ) !important;
+}
+
+.highlightr-style-demo-floating {
+  background: #93c0ffcc;
+  --floating-background: var(--background-primary);
+  border-radius: 0;
+  padding-bottom: 5px;
+  background-image: linear-gradient(
+    360deg,
+    rgba(255, 255, 255, 0) 28%,
+    var(--floating-background) 28%
+  ) !important;
+}
+
+.highlightr-style-demo-realistic {
+  background: #9cf09ccc;
+  margin: 0 -0.05em;
+  padding: 0.1em 0.4em;
+  border-radius: 0.8em 0.3em;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  text-shadow: 0 0 0.75em var(--background-primary-alt);
+}
+
+.highlightr-style-demo-rounded {
+  background: #cca9ffcc;
+  margin: 0 -0.05em;
+  padding: 0.125em 0.15em;
+  border-radius: 0.2em;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}

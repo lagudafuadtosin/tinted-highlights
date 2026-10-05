@@ -28,7 +28,7 @@ const highlighterMenu = (
         highlighterItem.setTitle(highlighter);
         highlighterItem.setIcon(`highlightr-pen-${highlighter}`.toLowerCase());
         highlighterItem.onClick(() => {
-          app.commands.executeCommandById(`highlightr-plugin:${highlighter}`);
+          app.commands.executeCommandById(`tinted-highlights:${highlighter}`);
         });
       });
     });

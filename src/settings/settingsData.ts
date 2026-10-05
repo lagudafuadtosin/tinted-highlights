@@ -17,6 +17,7 @@ export interface HighlightrSettings {
   highlighterMethods: string;
   highlighters: Highlighters;
   highlighterOrder: string[];
+  readableText: boolean;
 }
 
 const DEFAULT_SETTINGS: HighlightrSettings = {
@@ -34,6 +35,7 @@ const DEFAULT_SETTINGS: HighlightrSettings = {
     Grey: "#CACFD9A6",
   },
   highlighterOrder: [],
+  readableText: true,
 };
 
 DEFAULT_SETTINGS.highlighterOrder = Object.keys(DEFAULT_SETTINGS.highlighters);
