@@ -20,6 +20,12 @@ Tinted Highlights is built on [Highlightr](https://github.com/chetachiezikeuzor/
 
 If you used Highlightr, the first time Tinted Highlights runs it brings over your colours, their order and your choices. Turn Highlightr off so the two do not both add menu items. Your notes do not change: highlights are the same `<mark>` HTML, so everything you highlighted before keeps its colour. Hotkeys belong to each plugin, so set your highlight hotkeys again.
 
+## Privacy
+
+- **Clipboard:** the plugin writes to the clipboard only when you press **Copy all** in the Highlights panel, and only the list of highlights from the open note. It never reads the clipboard.
+- **Network:** none. The plugin makes no network requests and collects nothing.
+- **Your notes:** it changes only the text you select and highlight. The Highlights panel only reads the open note.
+
 ## Known limit
 
 On iPhones and iPads older than iOS 16.4, the colour rules the plugin adds cannot load. Highlights still show their colours, but the automatic readable text does not apply there.
