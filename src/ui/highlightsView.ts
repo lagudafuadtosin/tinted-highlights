@@ -11,6 +11,8 @@ export const HIGHLIGHTS_VIEW = "tinted-highlights-panel";
 export class HighlightsView extends ItemView {
   plugin: HighlightrPlugin;
   file: TFile | null = null;
+  // Switching tabs fires more than one refresh at once. Each takes a number; only the newest one draws (#3).
+  private drawing = 0;
 
   constructor(leaf: WorkspaceLeaf, plugin: HighlightrPlugin) {
     super(leaf);
@@ -42,17 +44,21 @@ export class HighlightsView extends ItemView {
   }
 
   async refresh() {
+    const mine = ++this.drawing;
     const active = this.app.workspace.getActiveFile();
     if (active && active.extension === "md") this.file = active;
     const root = this.contentEl;
-    root.empty();
     root.addClass("tinted-panel");
     if (!this.file) {
+      root.empty();
       root.createEl("p", { text: "Open a note to see its highlights.", cls: "tinted-empty" });
       return;
     }
     const file = this.file;
     const content = await this.app.vault.cachedRead(file);
+    // A newer refresh started while this one was reading the note: let that one draw.
+    if (mine !== this.drawing) return;
+    root.empty();
     const found = findHighlights(content, this.plugin.settings.highlighters);
 
     const head = root.createDiv({ cls: "tinted-head" });

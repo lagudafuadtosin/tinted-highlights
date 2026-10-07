@@ -1,1 +1,1 @@
-Right-click a highlight and hover Highlight: the colours open straight away, no second click. Erase highlight now shows when the cursor is inside a highlight, not only for a selection. Clicking a highlight in Live Preview puts the cursor in it, so the menu and colours act on that highlight.
+Fix: the Highlights panel no longer shows its list twice after switching tabs (#3).

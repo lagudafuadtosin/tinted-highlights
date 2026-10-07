@@ -1,7 +1,7 @@
 {
   "id": "tinted-highlights",
   "name": "Tinted Highlights",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "minAppVersion": "1.7.2",
   "description": "Colour-coded highlighting that stays readable on any theme, recolours highlights in place, and shows every highlight in a note in one panel. Built on Highlightr by Chetachi Ezikeuzor.",
   "author": "Fuad Laguda",
