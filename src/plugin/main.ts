@@ -1,5 +1,5 @@
 import { markAt } from "src/utils/highlights";
-import { Editor, Menu, Notice, Plugin, PluginManifest } from "obsidian";
+import { Editor, MarkdownView, Menu, Notice, Plugin, PluginManifest } from "obsidian";
 import { wait } from "src/utils/util";
 import addIcons from "src/icons/customIcons";
 import { HighlightrSettingTab } from "../settings/settingsTab";
@@ -51,6 +51,12 @@ export default class HighlightrPlugin extends Plugin {
     );
 
     this.addSettingTab(new HighlightrSettingTab(this.app, this));
+
+    // #1 in Live Preview: a highlight is drawn as one block, and clicking it does not put the cursor inside
+    // its text. A click or right-click on it does that here, so the menu, a colour, right-click and Erase act
+    // on the highlight that was clicked. Runs before the editor's own right-click menu is built.
+    this.registerDomEvent(document, "click", (e) => this.cursorIntoClickedHighlight(e));
+    this.registerDomEvent(document, "contextmenu", (e) => this.cursorIntoClickedHighlight(e), { capture: true });
 
     // The Highlights panel (#102, #70): every highlight in the open note, by colour
     this.registerView(HIGHLIGHTS_VIEW, (leaf) => new HighlightsView(leaf, this));
@@ -123,6 +129,27 @@ export default class HighlightrPlugin extends Plugin {
     if (!span) return false;
     editor.setSelection({ line: cur.line, ch: span.textStart }, { line: cur.line, ch: span.textEnd });
     return true;
+  }
+
+  cursorIntoClickedHighlight(e: MouseEvent) {
+    if (!this.settings.cursorInHighlight || !(e.target instanceof Element)) return;
+    const mark = e.target.closest("mark");
+    const embed = mark?.closest(".cm-html-embed");
+    if (!mark || !embed) return;
+    const view = this.app.workspace.getActiveViewOfType(MarkdownView);
+    if (!view || !view.containerEl.contains(embed)) return;
+    const editor = view.editor as EnhancedEditor;
+    const at = editor.cm?.posAtDOM?.(embed);
+    if (at === undefined) return;
+    const start = editor.offsetToPos(at);
+    const line = editor.getLine(start.line);
+    // The block may hold more than one highlight: take the one that was clicked, counting from its start.
+    const which = Array.from(embed.querySelectorAll("mark")).indexOf(mark);
+    const lower = line.toLowerCase();
+    let span = markAt(line, start.ch);
+    for (let i = 0; span && i < which; i++) span = markAt(line, lower.indexOf("<mark", span.closeEnd));
+    if (!span) return;
+    editor.setCursor({ line: start.line, ch: span.textEnd });
   }
 
   eraseHighlight = (editor: Editor) => {

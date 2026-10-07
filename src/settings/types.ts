@@ -9,7 +9,8 @@ export interface Coords {
 
 export type EnhancedMenu = Menu & { dom: HTMLElement };
 
-export type EnhancedMenuItem = MenuItem & { dom: HTMLElement };
+// setSubmenu is in Obsidian but not in its public typings; it is checked before use.
+export type EnhancedMenuItem = MenuItem & { dom: HTMLElement; setSubmenu?: () => Menu };
 
 // Obsidian's command registry, which the public typings leave out.
 interface AppCommands {
@@ -25,7 +26,7 @@ export type EnhancedApp = App & {
 export type EnhancedEditor = Editor & {
   cursorCoords?: (where: boolean, mode: string) => Coords;
   coordsAtPos?: (offset: number) => Coords;
-  cm: { coordsAtPos?: (offset: number) => Coords | null };
+  cm: { coordsAtPos?: (offset: number) => Coords | null; posAtDOM?: (node: Node) => number };
 };
 
 // Constructable stylesheets, missing from the TypeScript DOM library this project builds with.
