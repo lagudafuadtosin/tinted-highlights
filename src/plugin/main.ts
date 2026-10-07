@@ -1,3 +1,4 @@
+import { markAt } from "src/utils/highlights";
 import { Editor, Menu, Notice, Plugin, PluginManifest } from "obsidian";
 import { wait } from "src/utils/util";
 import addIcons from "src/icons/customIcons";
@@ -113,7 +114,30 @@ export default class HighlightrPlugin extends Plugin {
     this.styleSheets.delete(doc);
   }
 
+  // #1: nothing selected and the cursor inside a highlight: select that highlight's text, so a colour,
+  // the menu or Remove highlight acts on it. Off in settings keeps the old way (select the text first).
+  selectHighlightAtCursor(editor: Editor): boolean {
+    if (!this.settings.cursorInHighlight || editor.somethingSelected()) return false;
+    const cur = editor.getCursor();
+    const span = markAt(editor.getLine(cur.line), cur.ch);
+    if (!span) return false;
+    editor.setSelection({ line: cur.line, ch: span.textStart }, { line: cur.line, ch: span.textEnd });
+    return true;
+  }
+
   eraseHighlight = (editor: Editor) => {
+    // The cursor inside a highlight, nothing selected: take that highlight's tags away, keep its text.
+    if (this.settings.cursorInHighlight && !editor.somethingSelected()) {
+      const cur = editor.getCursor();
+      const span = markAt(editor.getLine(cur.line), cur.ch);
+      if (span) {
+        const text = editor.getLine(cur.line).slice(span.textStart, span.textEnd);
+        editor.replaceRange(text, { line: cur.line, ch: span.openStart }, { line: cur.line, ch: span.closeEnd });
+        editor.setCursor({ line: cur.line, ch: Math.max(span.openStart, Math.min(cur.ch - span.open.length, span.openStart + text.length)) });
+        editor.focus();
+        return;
+      }
+    }
     const currentStr = editor.getSelection();
     const newStr = currentStr
       .replace(/<mark style.*?[^>]>/g, "")
@@ -126,6 +150,7 @@ export default class HighlightrPlugin extends Plugin {
   generateCommands(editor: Editor) {
     this.settings.highlighterOrder.forEach((highlighterKey: string) => {
       const applyCommand = (command: CommandPlot, editor: Editor) => {
+        this.selectHighlightAtCursor(editor);
         const selectedText = editor.getSelection();
 
         // Recolour (#63). A selection that already holds highlights gets this colour instead of a

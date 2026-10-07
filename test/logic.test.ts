@@ -3,7 +3,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readableTextOn } from "../src/utils/createStyles.ts";
-import { findHighlights, asMarkdown } from "../src/utils/highlights.ts";
+import { findHighlights, asMarkdown, markAt, inNoteOrder } from "../src/utils/highlights.ts";
 
 const DARK = "#1a1a1a";
 const LIGHT = "#f5f5f5";
@@ -60,4 +60,37 @@ test("a colour not in settings is kept by its value", () => {
 test("copy all groups by colour under the note's name", () => {
   const found = findHighlights('<mark style="background: #FFF3A3A6;">a</mark> <mark style="background: #ADCCFFA6;">b</mark> <mark style="background: #FFF3A3A6;">c</mark>', colours);
   assert.equal(asMarkdown("My note", found), "# Highlights from [[My note]]\n\n## Yellow\n- a\n- c\n\n## Blue\n- b\n");
+});
+
+test("#1: finds the highlight the cursor is in, tags included", () => {
+  const line = 'Some <mark style="background: #FFF3A3A6;">yellow words</mark> and more';
+  const open = '<mark style="background: #FFF3A3A6;">';
+  const span = markAt(line, line.indexOf("words"));
+  assert.ok(span);
+  assert.equal(span.open, open);
+  assert.equal(line.slice(span.textStart, span.textEnd), "yellow words");
+  assert.equal(span.openStart, 5);
+  assert.equal(line.slice(span.openStart, span.closeEnd), `${open}yellow words</mark>`);
+  // On either edge of the tags still counts; outside does not.
+  assert.ok(markAt(line, span.openStart));
+  assert.ok(markAt(line, span.closeEnd));
+  assert.equal(markAt(line, 2), null);
+  assert.equal(markAt(line, line.length), null);
+});
+
+test("#1: with two highlights on a line, picks the one under the cursor", () => {
+  const line = '<mark class="hltr-blue">one</mark> gap <mark class="hltr-red">two</mark>';
+  const span = markAt(line, line.indexOf("two"));
+  assert.equal(span?.open, '<mark class="hltr-red">');
+  assert.equal(markAt(line, line.indexOf("gap") + 1), null);
+});
+
+test("#2: note order is top to bottom, left to right, whatever the colour", () => {
+  const note = ['<mark style="background: #ADCCFFA6;">b1</mark> <mark style="background: #FFF3A3A6;">y1</mark>', "==plain==", '<mark style="background: #FFF3A3A6;">y2</mark>'].join("\n");
+  assert.deepEqual(inNoteOrder(findHighlights(note, colours)).map((f) => f.text), ["b1", "y1", "plain", "y2"]);
+});
+
+test("#2: copy all in note order lists each highlight with its colour", () => {
+  const found = findHighlights('<mark style="background: #FFF3A3A6;">a</mark> <mark style="background: #ADCCFFA6;">b</mark> <mark style="background: #FFF3A3A6;">c</mark>', colours);
+  assert.equal(asMarkdown("My note", found, "note"), "# Highlights from [[My note]]\n\n- a (Yellow)\n- b (Blue)\n- c (Yellow)\n");
 });

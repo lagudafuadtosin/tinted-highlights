@@ -65,6 +65,33 @@ export class HighlightrSettingTab extends PluginSettingTab {
         })
       );
 
+    new Setting(containerEl)
+      .setName("Change a highlight by clicking inside it")
+      .setDesc(
+        "With nothing selected and the text caret anywhere inside a highlight, a colour, the highlight menu or the command to remove a highlight acts on that whole highlight. Turn off to select the text first, as before."
+      )
+      .addToggle((toggle) =>
+        toggle.setValue(this.plugin.settings.cursorInHighlight).onChange(async (on) => {
+          this.plugin.settings.cursorInHighlight = on;
+          await this.plugin.saveSettings();
+        })
+      );
+
+    new Setting(containerEl)
+      .setName("Highlights panel order")
+      .setDesc("Group the panel's highlights by colour, or list them in the order they appear in the note. The panel's own button switches this too.")
+      .addDropdown((dropdown) =>
+        dropdown
+          .addOption("colour", "By colour")
+          .addOption("note", "In note order")
+          .setValue(this.plugin.settings.panelOrder)
+          .onChange(async (value) => {
+            this.plugin.settings.panelOrder = value === "note" ? "note" : "colour";
+            await this.plugin.saveSettings();
+            this.plugin.app.workspace.getLeavesOfType("tinted-highlights-panel").forEach((l) => void (l.view as unknown as { refresh(): Promise<void> }).refresh());
+          })
+      );
+
     const stylesSetting = new Setting(containerEl);
 
     stylesSetting

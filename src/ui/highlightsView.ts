@@ -1,6 +1,6 @@
 import { ItemView, MarkdownView, Notice, TFile, WorkspaceLeaf, debounce } from "obsidian";
 import type HighlightrPlugin from "src/plugin/main";
-import { asMarkdown, findHighlights, MARKDOWN } from "src/utils/highlights";
+import { asMarkdown, findHighlights, inNoteOrder, MARKDOWN } from "src/utils/highlights";
 import type { Found } from "src/utils/highlights";
 
 export const HIGHLIGHTS_VIEW = "tinted-highlights-panel";
@@ -57,15 +57,36 @@ export class HighlightsView extends ItemView {
 
     const head = root.createDiv({ cls: "tinted-head" });
     head.createDiv({ text: `${found.length} highlight${found.length === 1 ? "" : "s"} in ${file.basename}`, cls: "tinted-count" });
+    const byNote = this.plugin.settings.panelOrder === "note";
+    // #2: switch between grouped by colour and the order they appear in the note (remembered in settings)
+    const sort = head.createEl("button", { text: byNote ? "In note order" : "By colour" });
+    sort.setAttr("aria-label", byNote ? "Listed in note order. Click to group by colour" : "Grouped by colour. Click to list in note order");
+    sort.onclick = async () => {
+      this.plugin.settings.panelOrder = byNote ? "colour" : "note";
+      await this.plugin.saveSettings();
+      await this.refresh();
+    };
     const copy = head.createEl("button", { text: "Copy all" });
     copy.disabled = found.length === 0;
     copy.onclick = async () => {
-      await navigator.clipboard.writeText(asMarkdown(file.basename, found));
+      await navigator.clipboard.writeText(asMarkdown(file.basename, found, this.plugin.settings.panelOrder));
       new Notice("Highlights copied as a list");
     };
 
     if (found.length === 0) {
       root.createEl("p", { text: "No highlights in this note yet.", cls: "tinted-empty" });
+      return;
+    }
+
+    if (byNote) {
+      const list = root.createDiv({ cls: "tinted-group" });
+      for (const f of inNoteOrder(found)) {
+        const value = this.plugin.settings.highlighters[f.colour];
+        const item = list.createDiv({ cls: "tinted-item", text: f.text });
+        item.setAttr("aria-label", f.colour);
+        if (value) item.style.borderLeftColor = value;
+        item.onclick = () => this.jump(file, f);
+      }
       return;
     }
 

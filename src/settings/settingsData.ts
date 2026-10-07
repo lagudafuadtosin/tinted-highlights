@@ -18,6 +18,10 @@ export interface HighlightrSettings {
   highlighters: Highlighters;
   highlighterOrder: string[];
   readableText: boolean;
+  // #1: with nothing selected, a colour (or the menu, or Remove highlight) acts on the highlight the cursor is in
+  cursorInHighlight: boolean;
+  // #2: the Highlights panel lists highlights by colour, or in the order they appear in the note
+  panelOrder: "colour" | "note";
 }
 
 const DEFAULT_SETTINGS: HighlightrSettings = {
@@ -36,6 +40,8 @@ const DEFAULT_SETTINGS: HighlightrSettings = {
   },
   highlighterOrder: [],
   readableText: true,
+  cursorInHighlight: true,
+  panelOrder: "colour",
 };
 
 DEFAULT_SETTINGS.highlighterOrder = Object.keys(DEFAULT_SETTINGS.highlighters);
