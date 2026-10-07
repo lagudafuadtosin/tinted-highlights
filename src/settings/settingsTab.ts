@@ -1,3 +1,4 @@
+import { HighlightsView, HIGHLIGHTS_VIEW } from "src/ui/highlightsView";
 import type HighlightrPlugin from "src/plugin/main";
 import {
   App,
@@ -88,7 +89,11 @@ export class HighlightrSettingTab extends PluginSettingTab {
           .onChange(async (value) => {
             this.plugin.settings.panelOrder = value === "note" ? "note" : "colour";
             await this.plugin.saveSettings();
-            this.plugin.app.workspace.getLeavesOfType("tinted-highlights-panel").forEach((l) => void (l.view as unknown as { refresh(): Promise<void> }).refresh());
+            // A panel hidden behind another tab is not loaded yet (Obsidian defers it) and has nothing to refresh;
+            // it draws in the new order when it is opened (#3).
+            this.plugin.app.workspace.getLeavesOfType(HIGHLIGHTS_VIEW).forEach((l) => {
+              if (l.view instanceof HighlightsView) void l.view.refresh();
+            });
           })
       );
 
