@@ -351,6 +351,9 @@ HIGHLIGHTR SUPPORT
 .tinted-swatch { width: 12px; height: 12px; border-radius: 3px; border: 1px solid var(--background-modifier-border); }
 .tinted-item { padding: 4px 8px; margin: 2px 0; border-left: 3px solid var(--interactive-accent); border-radius: 4px; cursor: pointer; font-size: var(--font-ui-small); line-height: 1.4; }
 .tinted-item:hover { background: var(--background-modifier-hover); }
+.tinted-footnotes { margin-top: 12px; }
+.tinted-footnote { border-left-color: var(--background-modifier-border); }
+.tinted-footnote-label { color: var(--text-muted); font-family: var(--font-monospace); }
 
 /* Settings: the highlight style preview under "Choose highlight style" */
 .highlightr-style-demo {

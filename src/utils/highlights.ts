@@ -39,6 +39,45 @@ export function findHighlights(content: string, highlighters: Record<string, str
   return found;
 }
 
+// A footnote in a note: [^label]: text written as a definition, or ^[text] written inline (#4).
+export type Footnote = { label: string; text: string; line: number; ch: number };
+
+// Every footnote in a note, in note order. A definition's indented lines after it belong to it, as in
+// Obsidian. Inline footnotes have no label of their own, so they are numbered "inline 1", "inline 2".
+export function findFootnotes(content: string): Footnote[] {
+  const notes: Footnote[] = [];
+  let inCode = false;
+  let last: Footnote | null = null;
+  let inline = 0;
+  content.split("\n").forEach((line, lineNo) => {
+    if (/^\s*(```|~~~)/.test(line)) {
+      inCode = !inCode;
+      last = null;
+      return;
+    }
+    if (inCode) return;
+    const def = /^\[\^([^\]\s]+)\]:\s*(.*)$/.exec(line);
+    if (def) {
+      last = { label: def[1], text: def[2].trim(), line: lineNo, ch: 0 };
+      notes.push(last);
+      return;
+    }
+    // An indented line straight after a definition carries on its text
+    if (last && /^(\t| {2,})\S/.test(line)) {
+      last.text = `${last.text} ${line.trim()}`.trim();
+      return;
+    }
+    last = null;
+    const re = /\^\[([^\]]+)\]/g;
+    let m: RegExpExecArray | null;
+    while ((m = re.exec(line))) {
+      const text = m[1].trim();
+      if (text) notes.push({ label: `inline ${++inline}`, text, line: lineNo, ch: m.index });
+    }
+  });
+  return notes;
+}
+
 // The <mark ...>...</mark> on a line that the cursor (column ch) is inside, counting the tags themselves.
 // Returns where its opening tag and its text start and end, or null when the cursor is not in one (#1).
 export type MarkSpan = { open: string; openStart: number; textStart: number; textEnd: number; closeEnd: number };

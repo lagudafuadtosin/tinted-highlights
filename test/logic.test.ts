@@ -3,7 +3,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readableTextOn } from "../src/utils/createStyles.ts";
-import { findHighlights, asMarkdown, markAt, inNoteOrder } from "../src/utils/highlights.ts";
+import { findHighlights, asMarkdown, markAt, inNoteOrder, findFootnotes } from "../src/utils/highlights.ts";
 
 const DARK = "#1a1a1a";
 const LIGHT = "#f5f5f5";
@@ -93,4 +93,27 @@ test("#2: note order is top to bottom, left to right, whatever the colour", () =
 test("#2: copy all in note order lists each highlight with its colour", () => {
   const found = findHighlights('<mark style="background: #FFF3A3A6;">a</mark> <mark style="background: #ADCCFFA6;">b</mark> <mark style="background: #FFF3A3A6;">c</mark>', colours);
   assert.equal(asMarkdown("My note", found, "note"), "# Highlights from [[My note]]\n\n- a (Yellow)\n- b (Blue)\n- c (Yellow)\n");
+});
+
+test("footnotes: definitions with their labels, in note order (#4)", () => {
+  const note = "Text with a note[^1] and another[^src].\n\n[^1]: The first footnote.\n[^src]: Where it came from.";
+  assert.deepEqual(findFootnotes(note).map((n) => [n.label, n.text, n.line]), [
+    ["1", "The first footnote.", 2],
+    ["src", "Where it came from.", 3],
+  ]);
+});
+
+test("footnotes: indented lines carry on a definition, inline footnotes are numbered (#4)", () => {
+  const note = "Inline one^[A quick aside] here.\n\n[^long]: Starts here\n    and carries on.\nNot part of it.";
+  const notes = findFootnotes(note);
+  assert.deepEqual(notes.map((n) => [n.label, n.text]), [
+    ["inline 1", "A quick aside"],
+    ["long", "Starts here and carries on."],
+  ]);
+  assert.equal(notes[0].ch, "Inline one".length);
+});
+
+test("footnotes: none inside code blocks, and a note without any gives none (#4)", () => {
+  assert.deepEqual(findFootnotes("```\n[^1]: not a footnote\n```"), []);
+  assert.deepEqual(findFootnotes("Just text, no notes."), []);
 });

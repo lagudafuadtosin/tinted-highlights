@@ -1,6 +1,6 @@
 import { ItemView, MarkdownView, Notice, TFile, WorkspaceLeaf, debounce } from "obsidian";
 import type HighlightrPlugin from "src/plugin/main";
-import { asMarkdown, findHighlights, inNoteOrder, MARKDOWN } from "src/utils/highlights";
+import { asMarkdown, findFootnotes, findHighlights, inNoteOrder, MARKDOWN } from "src/utils/highlights";
 import type { Found } from "src/utils/highlights";
 
 export const HIGHLIGHTS_VIEW = "tinted-highlights-panel";
@@ -81,6 +81,7 @@ export class HighlightsView extends ItemView {
 
     if (found.length === 0) {
       root.createEl("p", { text: "No highlights in this note yet.", cls: "tinted-empty" });
+      this.addFootnotes(root, file, content);
       return;
     }
 
@@ -93,6 +94,7 @@ export class HighlightsView extends ItemView {
         if (value) item.style.borderLeftColor = value;
         item.onclick = () => this.jump(file, f);
       }
+      this.addFootnotes(root, file, content);
       return;
     }
 
@@ -119,10 +121,26 @@ export class HighlightsView extends ItemView {
         item.onclick = () => this.jump(file, f);
       }
     }
+    this.addFootnotes(root, file, content);
+  }
+
+  // #4: the note's footnotes below the highlights, so both are in one place. Click one to jump to it.
+  addFootnotes(root: HTMLElement, file: TFile, content: string) {
+    if (!this.plugin.settings.panelFootnotes) return;
+    const notes = findFootnotes(content);
+    if (notes.length === 0) return;
+    const group = root.createDiv({ cls: "tinted-group tinted-footnotes" });
+    group.createDiv({ cls: "tinted-group-title", text: `Footnotes (${notes.length})` });
+    for (const n of notes) {
+      const item = group.createDiv({ cls: "tinted-item tinted-footnote" });
+      item.createSpan({ cls: "tinted-footnote-label", text: n.label.startsWith("inline") ? n.label : `[^${n.label}]` });
+      item.createSpan({ text: ` ${n.text || "(empty)"}` });
+      item.onclick = () => this.jump(file, n);
+    }
   }
 
   // Opens the note (or uses the open one) and puts the cursor on the highlight.
-  async jump(file: TFile, f: Found) {
+  async jump(file: TFile, f: { line: number; ch: number }) {
     let leaf = this.app.workspace.getLeavesOfType("markdown").find((l) => (l.view as MarkdownView).file === file);
     if (!leaf) {
       leaf = this.app.workspace.getLeaf(false);

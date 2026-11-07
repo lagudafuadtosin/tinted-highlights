@@ -97,6 +97,19 @@ export class HighlightrSettingTab extends PluginSettingTab {
           })
       );
 
+    new Setting(containerEl)
+      .setName("Show footnotes in the panel")
+      .setDesc("List the note's footnotes below its highlights, so both are in one place. Click one to jump to it.")
+      .addToggle((toggle) =>
+        toggle.setValue(this.plugin.settings.panelFootnotes).onChange(async (value) => {
+          this.plugin.settings.panelFootnotes = value;
+          await this.plugin.saveSettings();
+          this.plugin.app.workspace.getLeavesOfType(HIGHLIGHTS_VIEW).forEach((l) => {
+            if (l.view instanceof HighlightsView) void l.view.refresh();
+          });
+        })
+      );
+
     const stylesSetting = new Setting(containerEl);
 
     stylesSetting

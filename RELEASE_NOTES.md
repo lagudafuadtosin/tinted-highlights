@@ -1,1 +1,1 @@
-Fix: changing "Highlights panel order" in settings no longer throws an error when the Highlights panel is behind another sidebar tab (#3).
+New: the Highlights panel also lists the note's footnotes below its highlights, both [^label] footnotes and ^[inline] ones, so everything is in one place. Click one to jump to it. Turn it off in settings with "Show footnotes in the panel" (#4).
