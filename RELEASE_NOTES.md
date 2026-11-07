@@ -1,1 +1,1 @@
-New: the Highlights panel also lists the note's footnotes below its highlights, both [^label] footnotes and ^[inline] ones, so everything is in one place. Click one to jump to it. Turn it off in settings with "Show footnotes in the panel" (#4).
+The Highlights panel can list the note's footnotes below its highlights, both [^label] footnotes and ^[inline] ones. Click one to jump to it. It is off by default: turn on "Show footnotes in the panel" in the plugin settings (#4).

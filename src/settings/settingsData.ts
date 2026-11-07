@@ -22,7 +22,7 @@ export interface HighlightrSettings {
   cursorInHighlight: boolean;
   // #2: the Highlights panel lists highlights by colour, or in the order they appear in the note
   panelOrder: "colour" | "note";
-  // #4: the Highlights panel also lists the note's footnotes, below the highlights
+  // #4: the Highlights panel also lists the note's footnotes, below the highlights (off until turned on)
   panelFootnotes: boolean;
 }
 
@@ -44,7 +44,7 @@ const DEFAULT_SETTINGS: HighlightrSettings = {
   readableText: true,
   cursorInHighlight: true,
   panelOrder: "colour",
-  panelFootnotes: true,
+  panelFootnotes: false,
 };
 
 DEFAULT_SETTINGS.highlighterOrder = Object.keys(DEFAULT_SETTINGS.highlighters);

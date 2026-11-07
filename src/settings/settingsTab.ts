@@ -99,7 +99,7 @@ export class HighlightrSettingTab extends PluginSettingTab {
 
     new Setting(containerEl)
       .setName("Show footnotes in the panel")
-      .setDesc("List the note's footnotes below its highlights, so both are in one place. Click one to jump to it.")
+      .setDesc("Also list the note's footnotes below its highlights, so both are in one place. Click one to jump to it. Off by default.")
       .addToggle((toggle) =>
         toggle.setValue(this.plugin.settings.panelFootnotes).onChange(async (value) => {
           this.plugin.settings.panelFootnotes = value;
